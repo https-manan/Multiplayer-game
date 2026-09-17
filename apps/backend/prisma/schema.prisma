@@ -1,0 +1,68 @@
+// Prisma schema for the Metaverse room app.
+//
+// Using SQLite by default so the project runs with zero external setup.
+// To use Postgres in production, just change the datasource block below to:
+//
+//   datasource db {
+//     provider = "postgresql"
+//     url      = env("DATABASE_URL")
+//   }
+//
+// and set DATABASE_URL="postgresql://user:pass@host:5432/dbname" in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  roomMemberships RoomMember[]
+  callsAsUserA    CallLog[]    @relation("CallUserA")
+  callsAsUserB    CallLog[]    @relation("CallUserB")
+}
+
+model Room {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  members  RoomMember[]
+  callLogs CallLog[]
+}
+
+// Tracks which users have ever joined which room (history, not live presence).
+// Live position/presence is kept in-memory on the server via websockets,
+// since that data is ephemeral and changes many times per second.
+model RoomMember {
+  id       String   @id @default(uuid())
+  userId   String
+  roomId   String
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@unique([userId, roomId])
+}
+
+// A record of a proximity-triggered video call between two users in a room.
+model CallLog {
+  id        String    @id @default(uuid())
+  roomId    String
+  userAId   String
+  userBId   String
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  room  Room @relation(fields: [roomId], references: [id])
+  userA User @relation("CallUserA", fields: [userAId], references: [id])
+  userB User @relation("CallUserB", fields: [userBId], references: [id])
+}

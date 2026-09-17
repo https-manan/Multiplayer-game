@@ -1,0 +1,18 @@
+{
+  "name": "metaverse-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Metaverse-style room: users roam around, see each other move in real time, and auto-start a WebRTC video call when they get close.",
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w apps/backend",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "prisma:generate": "npm run prisma:generate -w apps/backend",
+    "prisma:migrate": "npm run prisma:migrate -w apps/backend",
+    "build:backend": "npm run build -w apps/backend",
+    "build:frontend": "npm run build -w apps/frontend"
+  }
+}
