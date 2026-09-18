@@ -1,22 +1,11 @@
-// Prisma schema for the Metaverse room app.
-//
-// Using SQLite by default so the project runs with zero external setup.
-// To use Postgres in production, just change the datasource block below to:
-//
-//   datasource db {
-//     provider = "postgresql"
-//     url      = env("DATABASE_URL")
-//   }
-//
-// and set DATABASE_URL="postgresql://user:pass@host:5432/dbname" in .env
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
 
 model User {
